@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A4UX 頻道健檢報告 — 給老闆看的機密文件</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#08080a;--bg2:#0e0e12;--ink:#f2ede4;--ink-dim:#9a938a;
+  --gold:#d9a441;--gold-hi:#f3cf7e;--red:#e05545;--green:#5db87a;--blue:#5a8fd6;
+  --serif:'Noto Serif TC',serif;--sans:'Noto Sans TC',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+::selection{background:var(--gold);color:#000}
+.wrap{max-width:1080px;margin:0 auto;padding:0 clamp(1.2rem,4vw,3rem)}
+header{padding:clamp(4rem,10vh,7rem) 0 3rem;border-bottom:1px solid #1c1c22}
+.tag{display:inline-block;border:1px solid var(--red);color:var(--red);font-size:.68rem;letter-spacing:.4em;text-indent:.4em;
+  padding:.5em 1.2em;border-radius:2em;margin-bottom:1.6rem}
+h1{font-family:var(--serif);font-weight:900;font-size:clamp(1.9rem,5.5vw,3.4rem);line-height:1.3}
+h1 .gold{background:linear-gradient(180deg,#f7e3ae,var(--gold) 60%,#8a5a1c 78%,#eecb7f);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lede{margin-top:1.4rem;color:var(--ink-dim);line-height:2.1;font-weight:300;max-width:44em}
+.lede b{color:var(--ink);font-weight:500}
+section{padding:clamp(3rem,8vh,5rem) 0}
+.kicker{display:flex;align-items:center;gap:1rem;color:var(--gold);font-size:.72rem;letter-spacing:.5em;font-weight:500;margin-bottom:1rem}
+.kicker::before{content:'';width:44px;height:1px;background:var(--gold)}
+h2{font-family:var(--serif);font-weight:900;font-size:clamp(1.5rem,3.6vw,2.2rem);margin-bottom:.8rem}
+.note{color:var(--ink-dim);font-size:.86rem;line-height:2;font-weight:300;max-width:46em}
+.chart-box{background:linear-gradient(180deg,#101016,#0b0b0f);border:1px solid #1d1d24;border-radius:14px;
+  padding:clamp(1.2rem,3vw,2rem);margin-top:2rem}
+canvas{width:100%;height:auto;display:block}
+.legend{display:flex;gap:1.6rem;flex-wrap:wrap;margin-top:1rem;font-size:.74rem;color:var(--ink-dim)}
+.legend span{display:inline-flex;align-items:center;gap:.5em}
+.legend i{width:14px;height:8px;border-radius:2px;display:inline-block}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.2rem;margin-top:2rem}
+.kcard{background:linear-gradient(180deg,#101016,#0b0b0f);border:1px solid #1d1d24;border-radius:14px;padding:1.8rem 1.6rem}
+.kcard .big{font-family:var(--serif);font-weight:900;font-size:2.1rem}
+.kcard .big.bad{color:var(--red)}
+.kcard .big.good{color:var(--green)}
+.kcard .big.gold{color:var(--gold)}
+.kcard h4{font-size:.92rem;margin:.6rem 0 .5rem;font-weight:700}
+.kcard p{color:var(--ink-dim);font-size:.8rem;line-height:1.9;font-weight:300}
+.finding{display:flex;gap:1.6rem;padding:2rem 0;border-bottom:1px solid #17171d}
+.finding .no{font-family:var(--serif);font-weight:900;font-size:2rem;color:var(--gold);opacity:.85;line-height:1;min-width:2.2em}
+.finding h3{font-family:var(--serif);font-size:1.25rem;font-weight:700;margin-bottom:.7rem}
+.finding p{color:var(--ink-dim);line-height:2.05;font-weight:300;font-size:.9rem}
+.finding b{color:var(--ink);font-weight:500}
+.finding .pill{color:var(--gold);border:1px solid #3a3122;border-radius:2em;font-size:.7rem;padding:.25em .9em;margin-left:.6em;white-space:nowrap}
+table{width:100%;border-collapse:collapse;margin-top:1.6rem;font-size:.82rem}
+th{text-align:left;color:var(--gold);font-weight:500;letter-spacing:.14em;font-size:.7rem;padding:.7em .8em;border-bottom:1px solid #2a2a32}
+td{padding:.75em .8em;border-bottom:1px solid #15151a;color:var(--ink-dim);font-weight:300}
+td.t{color:var(--ink);font-weight:400}
+td.n{font-variant-numeric:tabular-nums;text-align:right}
+tr.hot td{color:var(--gold-hi)}
+tr.cold td{color:#6b6560}
+.reco{background:linear-gradient(180deg,#14110a,#0d0b07);border:1px solid #33291a;border-radius:14px;padding:2rem 1.8rem;margin-top:1.4rem}
+.reco h3{font-family:var(--serif);font-size:1.2rem;color:var(--gold-hi);margin-bottom:.8rem}
+.reco h3 .idx{color:var(--gold);opacity:.7;margin-right:.5em}
+.reco p{color:var(--ink-dim);line-height:2.05;font-size:.88rem;font-weight:300}
+.reco b{color:var(--ink);font-weight:500}
+.reco .why{margin-top:.8rem;font-size:.78rem;color:#7d7568;border-left:2px solid var(--gold);padding-left:1em}
+footer{padding:3rem 0 4rem;text-align:center;color:#55504a;font-size:.72rem;letter-spacing:.14em}
+footer a{color:var(--gold);text-decoration:none}
+@media(max-width:640px){.finding{flex-direction:column;gap:.6rem}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="tag">CONFIDENTIAL · 頻道健檢</div>
+    <h1>觀看數為什麼往下掉？<br><span class="gold">數據會說話，而且說得很直接。</span></h1>
+    <p class="lede">基於全頻道 <b>135 部公開影片</b>的觀看數、按讚數與發布日期分析（截至 2026.07.06）。
+    先講結論：<b>你的內容品質沒有變差——按讚率反而創新高</b>。掉的是「曝光引擎」：更新頻率崩跌、
+    選題偏離訂閱者當初按下訂閱的理由，以及爆紅期的導流梗消失了。以下是完整拆解。</p>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="kicker">OVERVIEW</div>
+    <h2>月度觀看 × 發片量</h2>
+    <p class="note">金色長條＝當月發片支數，紅線＝當月影片總觀看（對數尺度）。注意 12 月的「44 部狂發」與觀看爆發完全同步——這不是巧合，是 YouTube 演算法的動量機制。</p>
+    <div class="chart-box">
+      <canvas id="chartMonthly" width="1000" height="420"></canvas>
+      <div class="legend">
+        <span><i style="background:var(--gold)"></i>發片數</span>
+        <span><i style="background:var(--red)"></i>總觀看數（log）</span>
+      </div>
+    </div>
+    <div class="cards">
+      <div class="kcard"><div class="big bad">−98%</div><h4>單月總觀看跌幅</h4><p>2025/12 的 337 萬 → 2026/06 只剩 2,540。即使扣除新片累積時間較短的因素，跌幅仍是斷崖級。</p></div>
+      <div class="kcard"><div class="big bad">44 → 4</div><h4>月發片量</h4><p>12 月狂發 44 部，6 月只剩 4 部。演算法動量完全冷卻，頻道從「每天出現在首頁」變成「偶爾想起你」。</p></div>
+      <div class="kcard"><div class="big good">3.0%+</div><h4>近期按讚率（12月為 1.6%）</h4><p>還在看的人比以前更愛你。這是「鐵粉還在、路人不見了」的典型訊號——問題在觸及，不在品質。</p></div>
+      <div class="kcard"><div class="big gold">9,134</div><h4>近 3 個月職場改編平均觀看</h4><p>同期台語創作中位數僅 1,664、工具實測 446。核心題材依然是你表現最好的牌，但你最近幾乎沒打它。</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="kicker">DIAGNOSIS</div>
+    <h2>四個下滑主因</h2>
+
+    <div class="finding">
+      <div class="no">01</div>
+      <div>
+        <h3>更新頻率崩跌，演算法動量歸零 <span class="pill">影響最大</span></h3>
+        <p>YouTube 推薦系統極度獎勵「連續穩定供片」的頻道。12 月你用 44 部影片餵飽演算法，它就把你推給所有人（單月 337 萬觀看、中位數 3.5 萬）；
+        2 月起發片量掉到 13 → 3 → 7 → 8 → 4，演算法對頻道的「新鮮度評分」隨之冷卻，連帶舊片的推薦也一起萎縮。
+        <b>觀看數跟發片量的相關性，在你的數據裡幾乎是 1:1 同步。</b></p>
+      </div>
+    </div>
+
+    <div class="finding">
+      <div class="no">02</div>
+      <div>
+        <h3>選題漂移：正在變回「當初失敗的那個知識頻道」</h3>
+        <p>訂閱你的 36,700 人，是為了「職場厭世改編神曲」按下訂閱的。但 6 月的 4 部影片是：台語勵志搖滾、台語心聲、<b>TAD AI 工具實測</b>、二胡古風療癒——
+        沒有一部是職場改編。工具實測（446 次觀看）本質上就是教學內容，這正是頻道當年轉型前做不起來的類型。
+        近 3 個月數據：<b>職場改編中位數 8,983 ＞ 翻唱 3,965 ＞ 台語 1,664 ＞ 療癒 537</b>。牌桌上最強的牌被你收起來了。</p>
+      </div>
+    </div>
+
+    <div class="finding">
+      <div class="no">03</div>
+      <div>
+        <h3>爆紅期的「事件感」消失了</h3>
+        <p>回看你的爆款：67 萬的《不想上班》動態版是「IG 破 7000 感謝祭＋5566 許孟哲留言」的事件行銷；37 萬的《五月十一彼下埔》蹭到「國際沈文程日」的迷因熱點；
+        25 萬的《愛在西元前》是國民級神曲＋楔形文字視覺梗。<b>爆款都有「歌曲以外的話題鉤子」</b>——名人互動、節日迷因、社群事件。
+        近期作品回歸「純作品發布」，沒有給路人一個非點不可的理由。</p>
+      </div>
+    </div>
+
+    <div class="finding">
+      <div class="no">04</div>
+      <div>
+        <h3>沒有 Shorts，等於放棄免費的新客水龍頭</h3>
+        <p>頻道目前<b>沒有 Shorts 專區</b>，但你明明每天在 IG 經營 a4ux_reels 的短影音。3-4 分鐘的神曲剪出 45 秒的副歌高潮片段，
+        就是現成的 Shorts 素材——這是 2026 年 YouTube 拉新觀眾成本最低的管道，而你的競品（各 AI 音樂頻道）都在用。
+        另外：數據顯示 4-6 分鐘影片的觀看中位數（2.2 萬）是 2-4 分鐘（8.3 千）的 2.6 倍，長度本身不是問題，完整版值得做好做滿。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="kicker">CATEGORY</div>
+    <h2>題材成績單：巔峰期 vs 近三個月</h2>
+    <p class="note">中位數觀看（比平均數誠實，不被單一爆款拉高）。</p>
+    <div class="chart-box">
+      <canvas id="chartCat" width="1000" height="380"></canvas>
+      <div class="legend">
+        <span><i style="background:var(--gold)"></i>巔峰期 2025/12–2026/01</span>
+        <span><i style="background:var(--red)"></i>近期 2026/04–07</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="kicker">PRESCRIPTION</div>
+    <h2>接下來可以做什麼</h2>
+    <p class="note">按優先順序排列。前三項是「止血」，後三項是「開新水源」。</p>
+
+    <div class="reco">
+      <h3><span class="idx">Rx 1</span>回歸核心：每週固定 2 部職場改編，先穩住 8 週</h3>
+      <p>不用回到 12 月的瘋狂量產，但要<b>穩定</b>：例如每週二、五晚上 8 點各發一部職場改編神曲，連續 8 週不斷更。
+      演算法要的不是爆量，是「可預期的供片節奏」。台語、翻唱、療癒都可以繼續做，但當「配菜」穿插，主菜永遠是職場厭世。</p>
+      <p class="why">依據：近 3 個月職場改編中位數 8,983，是所有題材第一名；且你的歷史爆款前 10 名有 7 部是職場改編。</p>
+    </div>
+
+    <div class="reco">
+      <h3><span class="idx">Rx 2</span>開 Shorts 專區：每部歌剪 1-2 支 45 秒高潮片段</h3>
+      <p>你在 IG 已經有現成的 Reels 工作流，<b>同一支素材直接上傳 YouTube Shorts</b>，零額外成本。
+      Shorts 掛上完整版連結，讓副歌當釣餌、完整版收割訂閱。目標：先讓頻道每天都有 Shorts 動態，把演算法重新叫醒。</p>
+      <p class="why">依據：頻道目前無 Shorts；而你的最強導流事件（IG 破 7000 感謝祭 → 67 萬觀看）已證明短影音羣眾會回流長片。</p>
+    </div>
+
+    <div class="reco">
+      <h3><span class="idx">Rx 3</span>把工具實測、教學搬去 @a4uxteach</h3>
+      <p>TAD AI 實測這類內容做得再好，放在主頻道都是毒藥——它稀釋頻道定位，還讓演算法搞不懂該把你推給誰。
+      你已經開了教學頻道，就讓它徹底分家：<b>主頻道只留「會唱歌的內容」</b>。</p>
+      <p class="why">依據：6 月的工具實測 446 次觀看，是全月最低；UX/教學類歷史中位數長期墊底。</p>
+    </div>
+
+    <div class="reco">
+      <h3><span class="idx">Rx 4</span>每部片都要有「歌曲以外的鉤子」</h3>
+      <p>發片前先問：這部片的<b>留言區話題</b>是什麼？可操作的鉤子清單——
+      ①日曆梗：開工日、報稅季、勞動節、尾牙季、年終獎金公布日；②點歌互動：讓觀眾在留言區點「下一首要改編的歌」，用社群貼文投票；
+      ③名人梗：上次 5566 效應證明有效，改編時 tag 原唱、做「敢不敢回應」的挑戰式標題；④系列感：「社畜求生曲第 X 集」讓人追更。</p>
+      <p class="why">依據：前三大爆款（67萬/37萬/25萬）全部都有事件型鉤子，無一例外。</p>
+    </div>
+
+    <div class="reco">
+      <h3><span class="idx">Rx 5</span>台語線改打「迷因位」而非「勵志位」</h3>
+      <p>台語不是不能做——《五月十一彼下埔》37 萬觀看證明它能爆，但爆的原因是<b>「AI 老外唱沈文程」的荒謬迷因感</b>，
+      不是台語勵志詩歌（中位數 1,664）。台語線的正確打開方式：經典台語歌 × 意想不到的曲風混搭 × 好笑的違和感。</p>
+      <p class="why">依據：同是台語，迷因型 39,638 vs 勵志型 631–831，差 50 倍。</p>
+    </div>
+
+    <div class="reco">
+      <h3><span class="idx">Rx 6</span>新內容實驗方向（用 Shorts 低成本試水溫）</h3>
+      <p>①<b>「一拳系列」擴大成短劇宇宙</b>：EP1-3 已存在，各行各業的崩潰瞬間＋揮拳，天然適合 Shorts 連載；
+      ②<b>「老闆語錄」歌化</b>：徵集網友遇過最扯的老闆名言，一句話寫成 15 秒副歌；
+      ③<b>職業別專屬神曲</b>：護理師版、工程師版、教師版——每個職業都是一個新的分享圈層（「這根本是我」的轉發動力）；
+      ④<b>AI 歌手 VTuber 化</b>：讓頻道的 AI 女聲有固定人設與名字，累積角色 IP，未來可直播、可周邊。</p>
+      <p class="why">依據：你的核心資產是「情緒共鳴的具現化」，以上四條都是同一資產的新出口，且能用 Shorts 在 2 週內驗證。</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="kicker">APPENDIX</div>
+    <h2>近 20 部影片成績</h2>
+    <table id="recentTable">
+      <thead><tr><th>日期</th><th>標題</th><th>類型</th><th style="text-align:right">觀看</th><th style="text-align:right">讚</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <p class="note" style="margin-top:1.6rem">※ 誠實聲明:6-7 月影片上線時間較短，觀看數仍會成長，但過去爆款多在第一週就衝出量級（12 月影片首月即數萬），故趨勢判讀仍成立。會員專屬影片（3 部）不在統計內。</p>
+  </div>
+</section>
+
+<footer>
+  A4UX 頻道健檢 · 2026.07.06 產出 · <a href="index.html">← 回形象網站</a>
+</footer>
+
+<script src="data.js"></script>
+<script>
+const MUSIC = VIDEOS.filter(v => v.date >= '20250901');
+const fmt = n => n >= 10000 ? (n/10000).toFixed(1) + '萬' : n.toLocaleString();
+
+/* ---- monthly chart ---- */
+(function(){
+  const byM = {};
+  MUSIC.forEach(v => {
+    const m = v.date.slice(0,6);
+    (byM[m] = byM[m] || {n:0, views:0, lr:[]});
+    byM[m].n++; byM[m].views += v.views || 0;
+    if (v.views && v.likes) byM[m].lr.push(v.likes / v.views);
+  });
+  const months = Object.keys(byM).sort();
+  const c = document.getElementById('chartMonthly'), x = c.getContext('2d');
+  const W = c.width, H = c.height, P = {l:70, r:70, t:30, b:56};
+  const iw = W - P.l - P.r, ih = H - P.t - P.b;
+  const bw = iw / months.length;
+  const maxN = Math.max(...months.map(m => byM[m].n));
+  const maxV = Math.log10(4000000), minV = Math.log10(1000);
+
+  x.font = '12px "Noto Sans TC"'; x.textAlign = 'center';
+  months.forEach((m, i) => {
+    const cx = P.l + bw * i + bw / 2;
+    // bars (uploads)
+    const bh = byM[m].n / maxN * ih * .82;
+    const g = x.createLinearGradient(0, H - P.b - bh, 0, H - P.b);
+    g.addColorStop(0, '#f3cf7e'); g.addColorStop(1, '#8a5a1c');
+    x.fillStyle = g;
+    x.beginPath(); x.roundRect(cx - bw*.26, H - P.b - bh, bw*.52, bh, 4); x.fill();
+    x.fillStyle = '#9a938a';
+    x.fillText(m.slice(0,4) + '.' + m.slice(4), cx, H - P.b + 22);
+    x.fillStyle = '#d9a441';
+    x.fillText(byM[m].n, cx, H - P.b - bh - 8);
+  });
+  // views line (log scale)
+  x.strokeStyle = '#e05545'; x.lineWidth = 2.5; x.beginPath();
+  const pts = months.map((m, i) => {
+    const cx = P.l + bw * i + bw / 2;
+    const lv = Math.log10(Math.max(byM[m].views, 1000));
+    const cy = P.t + (1 - (lv - minV) / (maxV - minV)) * ih;
+    return [cx, cy];
+  });
+  pts.forEach(([px,py], i) => i ? x.lineTo(px,py) : x.moveTo(px,py));
+  x.stroke();
+  pts.forEach(([px,py], i) => {
+    x.fillStyle = '#e05545'; x.beginPath(); x.arc(px, py, 4, 0, 7); x.fill();
+    x.fillStyle = '#f2ede4'; x.font = '11px "Noto Sans TC"';
+    const m = months[i];
+    x.fillText(fmt(byM[m].views), px, py - 12);
+  });
+})();
+
+/* ---- category compare ---- */
+(function(){
+  const med = a => {
+    if (!a.length) return 0;
+    const s = [...a].sort((x,y)=>x-y), h = Math.floor(s.length/2);
+    return s.length % 2 ? s[h] : Math.round((s[h-1] + s[h]) / 2);
+  };
+  const CATS = [['parody','職場改編'],['cover','經典翻唱'],['taigi','台語創作'],['original','原創其他']];
+  const peak = {}, recent = {};
+  MUSIC.forEach(v => {
+    const c = ({healing:'original',seasonal:'original',game:'original',ux:'original',punch:'original'})[v.cat] || v.cat;
+    const m = v.date.slice(0,6);
+    if (m >= '202512' && m <= '202601') (peak[c] = peak[c] || []).push(v.views);
+    if (m >= '202604') (recent[c] = recent[c] || []).push(v.views);
+  });
+  const c = document.getElementById('chartCat'), x = c.getContext('2d');
+  const W = c.width, H = c.height, P = {l:130, r:110, t:16, b:16};
+  const iw = W - P.l - P.r, ih = H - P.t - P.b;
+  const rowH = ih / CATS.length;
+  const maxV = Math.max(...CATS.map(([k]) => med(peak[k] || [0])));
+  x.font = '13px "Noto Sans TC"';
+  CATS.forEach(([k, label], i) => {
+    const y0 = P.t + rowH * i;
+    x.fillStyle = '#f2ede4'; x.textAlign = 'right'; x.textBaseline = 'middle';
+    x.fillText(label, P.l - 16, y0 + rowH/2);
+    const pv = med(peak[k] || [0]), rv = med(recent[k] || [0]);
+    const pw = pv / maxV * iw, rw = rv / maxV * iw;
+    let g = x.createLinearGradient(P.l, 0, P.l + pw, 0);
+    g.addColorStop(0, '#8a5a1c'); g.addColorStop(1, '#f3cf7e');
+    x.fillStyle = g;
+    x.beginPath(); x.roundRect(P.l, y0 + rowH*.16, Math.max(pw,3), rowH*.28, 4); x.fill();
+    x.fillStyle = '#e05545';
+    x.beginPath(); x.roundRect(P.l, y0 + rowH*.52, Math.max(rw,3), rowH*.28, 4); x.fill();
+    x.textAlign = 'left'; x.fillStyle = '#d9a441';
+    x.fillText(`${fmt(pv)}（n=${(peak[k]||[]).length}）`, P.l + Math.max(pw,3) + 10, y0 + rowH*.30);
+    x.fillStyle = '#e05545';
+    x.fillText(`${fmt(rv)}（n=${(recent[k]||[]).length}）`, P.l + Math.max(rw,3) + 10, y0 + rowH*.66);
+  });
+})();
+
+/* ---- recent table ---- */
+(function(){
+  const CAT_LABEL = {parody:'職場改編',cover:'翻唱',taigi:'台語',original:'原創',game:'遊戲',ux:'教學',healing:'療癒',seasonal:'節慶'};
+  const tb = document.querySelector('#recentTable tbody');
+  [...MUSIC].sort((a,b) => b.date.localeCompare(a.date)).slice(0,20).forEach(v => {
+    const tr = document.createElement('tr');
+    if (v.views >= 8000) tr.className = 'hot';
+    if (v.views < 1200) tr.className = 'cold';
+    const d = `${v.date.slice(4,6)}/${v.date.slice(6,8)}`;
+    tr.innerHTML = `<td>${v.date.slice(0,4)}.${d.replace('/','.')}</td>
+      <td class="t">${v.title.length > 38 ? v.title.slice(0,38) + '…' : v.title}</td>
+      <td>${CAT_LABEL[v.cat] || v.cat}</td>
+      <td class="n">${v.views.toLocaleString()}</td>
+      <td class="n">${(v.likes || 0).toLocaleString()}</td>`;
+    tb.appendChild(tr);
+  });
+})();
+</script>
+</body>
+</html>
